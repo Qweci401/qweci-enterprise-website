@@ -231,9 +231,14 @@
         <p class="price">GHS 110 each</p>
 
 
-<a href="https://wa.me/233245633401?text=Hello%20Qweci%20Enterprise%2C%20I%20am%20interested%20in%20buying%20wooden%20pallets%20at%20GHS%20110%20each."
+
+<label for="woodQty" style="display:block;margin-top:10px;font-weight:bold;">Quantity:</label>
+<input type="number" id="woodQty" min="1" value="1" style="width:90px;padding:10px;border:1px solid #ccc;border-radius:6px;">
+
+<a href="https://wa.me/233245633401"
    target="_blank"
    rel="noopener"
+   onclick="event.preventDefault(); const qty=Math.max(1,parseInt(document.getElementById('woodQty').value,10)||1); const total=qty*110; const msg='Hello Qweci Enterprise, I want '+qty+' wooden pallets at GHS 110 each. Total: GHS '+total+'.'; window.open('https://wa.me/233245633401?text='+encodeURIComponent(msg),'_blank');"
    style="display:inline-block;background:#25D366;color:white;padding:12px 16px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:10px;">
   Enquire on WhatsApp
 </a>
