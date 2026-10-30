@@ -198,6 +198,47 @@
       padding: 35px 18px;
     }
   }
+/* Qweci Enterprise Blue Theme */
+body {
+  background: #f3f7fc;
+  color: #243449;
+}
+
+header {
+  background: linear-gradient(135deg, #123b70, #2563a6);
+}
+
+nav, footer {
+  background: #0d2d55;
+}
+
+.hero {
+  background: #e8f1fb;
+}
+
+.hero h2,
+#products > h2,
+.card h3,
+.price {
+  color: #123b70;
+}
+
+.contact {
+  background: #123b70;
+}
+
+.card {
+  border-color: #dce6f2;
+}
+
+.order-btn {
+  background: #2563a6;
+  color: white;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 8px;
+  font-weight: bold;
+}
 </style>
 
 </head>
@@ -230,6 +271,7 @@
         <h3>Wooden Pallets</h3>
         <p>Strong wooden pallets for storage, stacking and transporting goods.</p>
         <p class="price">GHS 110 each</p>
+        <button type="button" class="order-btn" onclick="addToOrder('wood','Wooden Pallets',110)">Add to Order</button>
 
 
 
@@ -252,6 +294,7 @@
         <h3>Plastic Pallets</h3>
         <p>Durable, reusable pallets for organised storage and handling.</p>
         <p class="price">GHS 450 each</p>
+        <button type="button" class="order-btn" onclick="addToOrder('plastic','Plastic Pallets',450)">Add to Order</button>
 
 
 <label for="plasticQty" style="display:block;margin-top:10px;font-weight:bold;">Quantity:</label>
@@ -274,6 +317,9 @@
         <h3>Foldable Canopy Tents</h3>
         <p>Convenient canopy tents for events, outdoor activities and promotions.</p>
         <p class="price">Contact for price</p>
+        <label for="canopyQty">Quantity:</label>
+<input type="number" id="canopyQty" min="1" value="1" style="width:90px;padding:10px;">
+<button type="button" class="order-btn" onclick="addToOrder('canopy','Foldable Canopy Tents',null,document.getElementById('canopyQty').value)">Add to Order</button>
 
 <a href="https://wa.me/233245633401?text=Hello%20Qweci%20Enterprise%2C%20please%20send%20me%20the%20price%20and%20availability%20of%20your%20foldable%20canopy%20tents."
    target="_blank"
@@ -286,6 +332,33 @@
     </div>
   </section>
 
+  <section id="order" style="max-width:900px;margin:25px auto;padding:20px;background:white;border-radius:15px;">
+  <h2 style="color:#123b70;text-align:center;">Your Order</h2>
+  <p>Add your products and send your order directly to us on WhatsApp.</p>
+
+  <div id="cartItems">Your order is empty.</div>
+  <p><strong>Subtotal: GHS <span id="cartTotal">0</span></strong></p>
+
+  <label>Your Name</label>
+  <input id="customerName" type="text" placeholder="Enter your name">
+
+  <label>Phone Number</label>
+  <input id="customerPhone" type="tel" placeholder="Enter your phone number">
+
+  <label>Delivery Location</label>
+  <input id="deliveryLocation" type="text" placeholder="Enter your location">
+
+  <label>Payment Preference</label>
+  <select id="paymentChoice">
+    <option>Payment on delivery (subject to confirmation)</option>
+    <option>Request online payment instructions</option>
+  </select>
+
+  <label>Additional Notes</label>
+  <textarea id="orderNotes" placeholder="Any additional information"></textarea>
+
+  <button type="button" class="order-btn" onclick="sendOrder()">Send Order on WhatsApp</button>
+  </section>
   <section id="about" class="hero">
     <h2>About Qweci Enterprise</h2>
     <p>We supply practical products to support businesses, storage, goods handling and outdoor activities.</p>
@@ -323,5 +396,117 @@ Contact Us on WhatsApp
   Chat with us on WhatsApp
 </a>
 
+<script>
+const orderCart = {};
+
+function addToOrder(key, name, price, qtyValue) {
+  const qty = Math.max(1, parseInt(qtyValue, 10) || 1);
+
+  if (orderCart[key]) {
+    orderCart[key].qty += qty;
+  } else {
+    orderCart[key] = { name: name, price: price, qty: qty };
+  }
+
+  renderOrder();
+  document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+}
+
+function changeQty(key, amount) {
+  if (!orderCart[key]) return;
+
+  orderCart[key].qty += amount;
+
+  if (orderCart[key].qty <= 0) {
+    delete orderCart[key];
+  }
+
+  renderOrder();
+}
+
+function removeItem(key) {
+  delete orderCart[key];
+  renderOrder();
+}
+
+function renderOrder() {
+  const box = document.getElementById('cartItems');
+  const keys = Object.keys(orderCart);
+  let total = 0;
+
+  if (keys.length === 0) {
+    box.innerHTML = 'Your order is empty.';
+  } else {
+    box.innerHTML = keys.map(function(key) {
+      const item = orderCart[key];
+
+      if (item.price !== null) {
+        total += item.price * item.qty;
+      }
+
+      const priceText = item.price === null
+        ? 'Price to be confirmed'
+        : 'GHS ' + (item.price * item.qty).toLocaleString();
+
+      return `<div style="padding:12px 0;border-bottom:1px solid #ddd;">
+        <strong>${item.name}</strong><br>
+        Quantity: ${item.qty}<br>
+        ${priceText}<br>
+        <button type="button" class="order-btn" onclick="changeQty('${key}',-1)">−</button>
+        <button type="button" class="order-btn" onclick="changeQty('${key}',1)">+</button>
+        <button type="button" class="order-btn" onclick="removeItem('${key}')">Remove</button>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('cartTotal').textContent = total.toLocaleString();
+}
+
+function sendOrder() {
+  const keys = Object.keys(orderCart);
+
+  if (keys.length === 0) {
+    alert('Please add a product to your order.');
+    return;
+  }
+
+  const name = document.getElementById('customerName').value.trim();
+  const phone = document.getElementById('customerPhone').value.trim();
+  const location = document.getElementById('deliveryLocation').value.trim();
+
+  if (!name || !phone || !location) {
+    alert('Please enter your name, phone number and delivery location.');
+    return;
+  }
+
+  let total = 0;
+
+  const products = keys.map(function(key) {
+    const item = orderCart[key];
+
+    if (item.price !== null) {
+      total += item.price * item.qty;
+    }
+
+    return '- ' + item.name + ' x ' + item.qty + ': ' +
+      (item.price === null ? 'Price to be confirmed' : 'GHS ' + (item.price * item.qty));
+  });
+
+  const message = `Hello Qweci Enterprise, I would like to place an order.
+
+${products.join('\n')}
+
+Known product subtotal: GHS ${total}
+Canopy and transport charges, if applicable, are to be confirmed.
+
+Name: ${name}
+Phone: ${phone}
+Delivery location: ${location}
+Payment preference: ${document.getElementById('paymentChoice').value}
+Additional notes: ${document.getElementById('orderNotes').value.trim()}`;
+
+  window.open('https://wa.me/233245633401?text=' + encodeURIComponent(message), '_blank');
+}
+          </script>
 </body>
 </html>
