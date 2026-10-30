@@ -316,6 +316,87 @@ nav, footer {
     padding: 22px 15px;
   }
 }
+  /* Modern product cards */
+.products {
+  gap: 26px;
+  padding: 28px 20px;
+}
+
+.card {
+  border: 1px solid #dce6f2;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(18, 59, 112, 0.10);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(18, 59, 112, 0.16);
+}
+
+.card img {
+  background: #f4f8fd;
+  padding: 10px;
+}
+
+.card .order-btn {
+  background: #2563a6;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 12px 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Order summary */
+#cartItems {
+  background: #f4f8fd;
+  border: 1px solid #dce6f2;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 18px 0;
+  color: #243449;
+}
+
+#cartItems:empty {
+  display: none;
+}
+
+#cartItems strong {
+  color: #123b70;
+}
+
+#cartItems button {
+  margin: 8px 5px 4px 0;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 13px;
+  background: #2563a6;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#cartTotal {
+  color: #123b70;
+  font-size: 22px;
+}
+
+#order > p strong {
+  color: #123b70;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 18px;
+  }
+
+  .products {
+    padding: 16px;
+  }
+}
 </style>
 
 </head>
